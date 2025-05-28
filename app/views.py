@@ -12,4 +12,5 @@ def home(request):
 
 def product_list(request):
     products = Product.objects.all()
+    print(products)
     return render(request, 'product_list.html', {'products': products})
