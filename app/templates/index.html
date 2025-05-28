@@ -1,1 +1,230 @@
-merhaba
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anasayfa — E-Ticaret</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  <!-- Dahili CSS -->
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #fff;
+      --bg-color: #f5f5f5;
+      --text-color: #333;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    /* Header */
+    header {
+      background: var(--primary-color);
+      padding: 1rem 2rem;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .nav .logo {
+      font-size: 1.5rem;
+      color: var(--secondary-color);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+    .nav ul li a {
+      color: var(--secondary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .nav ul li a:hover {
+      opacity: 0.8;
+    }
+    /* Hero */
+    .hero {
+      
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--secondary-color);
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    }
+    .btn-cta {
+      background: var(--secondary-color);
+      color: var(--primary-color);
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .btn-cta:hover {
+      background: #f0f0f0;
+    }
+    /* Main */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex: 1;
+    }
+    /* Footer */
+    footer {
+      background: var(--secondary-color);
+      padding: 2rem 1rem;
+      border-top: 1px solid #ddd;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .footer-brand {
+      flex: 1 1 200px;
+    }
+    .footer-brand h3 {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+    .footer-links {
+      flex: 1 1 150px;
+    }
+    .footer-links h4 {
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+      color: var(--text-color);
+    }
+    .footer-links ul {
+      list-style: none;
+    }
+    .footer-links ul li a {
+      color: #555;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 0.5rem;
+      transition: color 0.2s;
+    }
+    .footer-links ul li a:hover {
+      color: var(--primary-color);
+    }
+    .footer-social {
+      flex: 1 1 150px;
+    }
+    .footer-social h4 {
+      margin-bottom: 0.75rem;
+      color: var(--text-color);
+    }
+    .social-icons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .social-icons a {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      background: var(--bg-color);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 32px;
+      color: var(--primary-color);
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .social-icons a:hover {
+      background: var(--primary-color);
+      color: var(--secondary-color);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <a href="/" class="logo">E-Ticaret</a>
+      <ul>
+        <li><a href="/">Anasayfa</a></li>
+        <li><a href="/products/">Ürünler</a></li>
+        <li><a href="/cart/">Sepet</a></li>
+        <li><a href="/contact/">İletişim</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section class="hero">
+    <div>
+      <h1>Hoş Geldiniz!</h1>
+      <p>En kaliteli ürünleri uygun fiyatlarla keşfedin.</p>
+      <a href="{% url 'product_list' %}" class="btn-cta">Ürünlere Göz At</a>
+    </div>
+  </section>
+  <main class="container">
+    <!-- Anasayfa içeriği buraya eklenebilir -->
+  </main>
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h3>E-Ticaret</h3>
+        <p>Kalite ve güvenin adresi.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Hızlı Erişim</h4>
+        <ul>
+          <li><a href="/about/">Hakkımızda</a></li>
+          <li><a href="/products/">Ürünler</a></li>
+          <li><a href="/faq/">SSS</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Müşteri Hizmetleri</h4>
+        <ul>
+          <li><a href="/contact/">İletişim</a></li>
+          <li><a href="/shipping/">Kargo Takip</a></li>
+          <li><a href="/returns/">İade Koşulları</a></li>
+        </ul>
+      </div>
+      <div class="footer-social">
+        <h4>Bizi Takip Edin</h4>
+        <div class="social-icons">
+          <a href="#">&#x1F426;</a>
+          <a href="#">&#x1F4F7;</a>
+          <a href="#">&#x1F465;</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
