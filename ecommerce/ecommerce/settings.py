@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
 
+from pathlib import Path
+from pymongo import MongoClient
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -120,3 +122,15 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# 🔗 MongoDB Bağlantı URI (veritabanı adı tanımlı olmalı!)
+MONGO_URI = "mongodb+srv://bulutproje:Bt12345678.@proje.qm3htu9.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=proje"
+
+# (İsteğe bağlı) Bağlantı test kodu — kaldırılabilir
+try:
+    mongo_client = MongoClient(MONGO_URI)
+    mongo_client.admin.command('ping')
+    print("✅ MongoDB bağlantısı başarılı.")
+except Exception as e:
+    print("❌ MongoDB bağlantı hatası:", e)
