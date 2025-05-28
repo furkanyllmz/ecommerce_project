@@ -24,7 +24,8 @@
     .nav ul li a { color: var(--secondary-color); text-decoration: none; font-weight: 500; transition: opacity 0.2s; }
     .nav ul li a:hover { opacity: 0.8; }
     main { flex: 1; max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    /* 3 sütun, sonra alt satıra geçiş */
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
     .card { background: var(--secondary-color); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px var(--card-shadow); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
     .card:hover { transform: translateY(-5px); box-shadow: 0 4px 12px var(--card-shadow); }
     .card img { width: 100%; height: 200px; object-fit: cover; }
@@ -32,8 +33,10 @@
     .card-title { font-size: 1.25rem; margin-bottom: 0.5rem; }
     .card-text { flex: 1; margin-bottom: 1rem; color: #555; }
     .price { font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; color: var(--primary-color); }
-    .btn { text-decoration: none; text-align: center; padding: 0.75rem; border-radius: 4px; transition: background 0.2s; font-weight: 500; display: block; }
-    .btn-primary { background: var(--primary-color); color: var(--secondary-color); margin-bottom: 0.5rem; }
+    /* Buton stilleri */
+    .button-group { display: flex; gap: 0.5rem; margin-top: auto; }
+    .btn { text-decoration: none; text-align: center; padding: 0.75rem; border-radius: 4px; transition: background 0.2s; font-weight: 500; display: inline-block; }
+    .btn-primary { background: var(--primary-color); color: var(--secondary-color); }
     .btn-primary:hover { background: #43a047; }
     .btn-secondary { background: #2196F3; color: var(--secondary-color); }
     .btn-secondary:hover { background: #1976D2; }
@@ -72,6 +75,10 @@
           <h2 class="card-title">{{ product.name }}</h2>
           <p class="card-text">{{ product.description|truncatechars:120 }}</p>
           <div class="price">{{ product.price }} ₺</div>
+          <div class="button-group">
+            <a href="{% url 'product_detail' product.uid %}" class="btn btn-secondary">Detay</a>
+            <button class="btn btn-primary" onclick='addToCart({ id:{{ product.id }}, name: "{{ product.name }}", price: {{ product.price }} })'>Sepete Ekle</button>
+          </div>
         </div>
       </div>
       {% empty %}
@@ -112,5 +119,29 @@
       </div>
     </div>
   </footer>
+
+  <!-- Cart JS Script -->
+  <script>
+    function getCart() { return JSON.parse(localStorage.getItem('cart')||'[]'); }
+    function setCart(cart) { localStorage.setItem('cart', JSON.stringify(cart)); }
+    function addToCart(product) {
+      const cart = getCart();
+      const idx  = cart.findIndex(item=>item.id===product.id);
+      if(idx>-1) { cart[idx].quantity++; } else { cart.push({...product, quantity:1}); }
+      setCart(cart);
+      alert(product.name + ' sepete eklendi.');
+    }
+    function removeFromCart(id) { setCart(getCart().filter(item=>item.id!==id)); renderCart(); }
+    function clearCart() { localStorage.removeItem('cart'); renderCart(); }
+    function renderCart() {
+      const cart = getCart();
+      const tbody = document.querySelector('#cart-table tbody'); if(!tbody) return;
+      tbody.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => { const sub = item.price * item.quantity; total += sub; tbody.insertAdjacentHTML('beforeend', `<tr><td>${item.name}</td><td>${item.quantity}</td><td>${item.price.toFixed(2)} ₺</td><td>${sub.toFixed(2)} ₺</td><td><button onclick="removeFromCart(${item.id})">Sil</button></td></tr>`); });
+      document.getElementById('cart-total').textContent = total.toFixed(2) + ' ₺';
+    }
+    document.addEventListener('DOMContentLoaded', ()=> { renderCart(); if(document.getElementById('clear-cart')) document.getElementById('clear-cart').onclick = clearCart; });
+  </script>
 </body>
 </html>
