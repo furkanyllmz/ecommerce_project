@@ -2,16 +2,164 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ product.name }} • Detay</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #fff;
+      --bg-color: #f5f5f5;
+      --text-color: #333;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+    body { background: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; min-height: 100vh; }
+    header { background: var(--primary-color); padding: 1rem 2rem; }
+    .nav { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; }
+    .logo { font-size: 1.5rem; color: var(--secondary-color); text-decoration: none; font-weight: 700; }
+    .nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    .nav ul li a { color: var(--secondary-color); text-decoration: none; font-weight: 500; transition: opacity 0.2s; }
+    .nav ul li a:hover { opacity: 0.8; }
+    main { flex: 1; max-width: 1000px; margin: 2rem auto; padding: 1rem; background: var(--secondary-color); border-radius: 8px; box-shadow: 0 2px 8px var(--card-shadow); }
+    .product-detail {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .product-detail img {
+      width: 100%;
+      max-width: 450px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .details h1 {
+      font-size: 2rem;
+      color: var(--primary-color);
+    }
+    .details p { line-height: 1.6; }
+    .price { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); }
+    .button-group { margin-top: 1.5rem; display: flex; gap: 1rem; }
+    .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 4px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .btn-primary { background: var(--primary-color); color: var(--secondary-color); }
+    .btn-primary:hover { background: #43a047; }
+    .btn-secondary { background: #2196F3; color: var(--secondary-color); text-decoration: none; display: inline-block; text-align: center; line-height: 2.5rem; padding: 0.75rem 1.5rem; }
+    .btn-secondary:hover { background: #1976D2; }
+    @media (max-width: 768px) {
+      .product-detail { flex-direction: column; align-items: center; }
+    }
+    footer { background: var(--secondary-color); padding: 2rem 1rem; border-top: 1px solid #ddd; margin-top: auto; }
+    .footer-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; }
+  </style>
 </head>
 <body>
-  <h1>{{ product.name }}</h1>
-  <p><strong>Açıklama:</strong> {{ product.description }}</p>
-  <p><strong>Fiyat:</strong> {{ product.price }} ₺</p>
-  {% if product.image %}
-    <img src="{{ product.image.url }}" alt="{{ product.name }}" width="300">
-  {% endif %}
+  <header>
+    <nav class="nav">
+      <a href="/" class="logo">E-Ticaret</a>
+      <ul>
+        <li><a href="/">Anasayfa</a></li>
+        <li><a href="/products/">Ürünler</a></li>
+        <li><a href="/cart/">Sepet</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <p><a href="{% url 'product_list' %}">← Ürün Listesine Dön</a></p>
+  <main>
+    <div class="product-detail">
+      {% if product.image %}
+        <img src="{{ product.image }}" alt="{{ product.name }}">
+      {% endif %}
+      <div class="details">
+        <h1>{{ product.name }}</h1>
+        <p class="price">{{ product.price }} ₺</p>
+        <p>{{ product.description }}</p>
+        <div class="button-group">
+          <button class="btn btn-primary" onclick='addToCart({ uid:"{{ product.uid }}", name: "{{ product.name }}", price: {{ product.price }} })'>Sepete Ekle</button>
+          <a href="{% url 'product_list' %}" class="btn btn-secondary">← Geri Dön</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div>&copy; 2025 E-Ticaret</div>
+    </div>
+  </footer>
+
+  <!-- Cart Script -->
+  <script>
+  function getCart() {
+    return JSON.parse(localStorage.getItem('cart') || '[]');
+  }
+
+  function setCart(cart) {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+
+  function addToCart(product) {
+    const cart = getCart();
+    const idx = cart.findIndex(item => item.uid === product.uid);
+    if (idx > -1) {
+      cart[idx].quantity++;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+    setCart(cart);
+    alert(product.name + ' sepete eklendi.');
+  }
+
+  function removeFromCart(uid) {
+    setCart(getCart().filter(item => item.uid !== uid));
+    renderCart();
+  }
+
+  function clearCart() {
+    localStorage.removeItem('cart');
+    renderCart();
+  }
+
+  function renderCart() {
+    const cart = getCart();
+    const tbody = document.querySelector('#cart-table tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    let total = 0;
+
+    cart.forEach(item => {
+      const price = parseFloat(item.price);
+      const sub = price * item.quantity;
+      total += sub;
+
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${price.toFixed(2)} ₺</td>
+          <td>${sub.toFixed(2)} ₺</td>
+          <td><button onclick="removeFromCart('${item.uid}')">Sil</button></td>
+        </tr>
+      `);
+    });
+
+    document.getElementById('cart-total').textContent = total.toFixed(2) + ' ₺';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderCart();
+    const clearBtn = document.getElementById('clear-cart');
+    if (clearBtn) clearBtn.onclick = clearCart;
+  });
+</script>
+
 </body>
 </html>
